@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAP 2027 TGSPDCL — Summer Action Plan & 22 Circle Upload Portals</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- SheetJS (XLSX) CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0a192f',
+              navy: '#102a4e',
+              primary: '#0284c7',
+              accent: '#f59e0b',
+              surface: '#f8fafc'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white; font-size: 10px; }
+      table { width: 100% !important; border-collapse: collapse; }
+      th, td { border: 1px solid #94a3b8 !important; padding: 3px 5px !important; }
+    }
+    .custom-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- TOP HEADER -->
+  <header class="bg-brand-dark text-white shadow-md no-print sticky top-0 z-40 border-b-2 border-brand-accent">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- LOGO -->
+      <a href="javascript:void(0)" onclick="switchView('home')" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded bg-amber-500 text-slate-950 flex items-center justify-center font-black shadow group-hover:scale-105 transition">
+          <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold tracking-tight group-hover:text-amber-400 transition">SAP 2027 TGSPDCL</h1>
+            <span class="bg-emerald-600/90 text-[10px] text-white px-2 py-0.5 rounded font-semibold tracking-wide">22 Circle Portals</span>
+          </div>
+          <p class="text-[11px] text-slate-300">Summer Action Plan — Zonal, Circle & Priority Monitoring (22 Circles / 4 Zones)</p>
+        </div>
+      </a>
+
+      <!-- MAIN NAVIGATION TABS -->
+      <div class="flex flex-wrap items-center gap-1.5 text-xs">
+        <button id="nav-btn-home" onclick="switchView('home')" class="px-2.5 py-1.5 rounded font-semibold bg-sky-600 text-white flex items-center gap-1 transition">
+          <i class="fa-solid fa-house"></i> Home
+        </button>
+        <button id="nav-btn-circle-uploads" onclick="switchView('circle-uploads')" class="px-2.5 py-1.5 rounded font-semibold bg-amber-600 hover:bg-amber-500 text-slate-950 flex items-center gap-1 transition shadow-xs">
+          <i class="fa-solid fa-cloud-arrow-up"></i> 22 Circle Portals
+        </button>
+        <button id="nav-btn-daily" onclick="switchView('daily')" class="px-2.5 py-1.5 rounded font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1 transition">
+          <i class="fa-solid fa-chart-pie text-sky-400"></i> Zonal Daily Status
+        </button>
+        <button id="nav-btn-abstract" onclick="switchView('abstract')" class="px-2.5 py-1.5 rounded font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1 transition">
+          <i class="fa-solid fa-list-ol text-amber-400"></i> Priority Abstract
+        </button>
+        <button id="nav-btn-weekly" onclick="switchView('weekly')" class="px-2.5 py-1.5 rounded font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1 transition">
+          <i class="fa-solid fa-calendar-check text-emerald-400"></i> Weekly Progress
+        </button>
+        <button id="nav-btn-status-update" onclick="switchView('status-update')" class="px-2.5 py-1.5 rounded font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1 transition">
+          <i class="fa-solid fa-toggle-on text-sky-400"></i> Update Status
+        </button>
+        <button id="nav-btn-add-work" onclick="switchView('add-work')" class="px-2.5 py-1.5 rounded font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1 transition">
+          <i class="fa-solid fa-circle-plus text-emerald-400"></i> Add New Work
+        </button>
+        <button id="nav-btn-admin" onclick="openAdminPortalTab()" class="px-2.5 py-1.5 rounded font-semibold bg-rose-900 hover:bg-rose-800 text-rose-100 flex items-center gap-1 transition shadow-xs border border-rose-700/50">
+          <i class="fa-solid fa-shield-halved"></i> Admin Portal
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PRINT TITLE -->
+  <div class="hidden print:block p-4 border-b text-center">
+    <h2 class="text-xl font-bold">TGSPDCL — SAP 2027 WORK-WISE PROGRESS & STATUS REPORT</h2>
+    <p class="text-xs text-gray-500" id="printTimestamp"></p>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto w-full p-3 sm:p-5 flex-grow space-y-4">
+
+    <!-- ==================== VIEW 0: HOME LANDING PAGE ==================== -->
+    <div id="view-home" class="space-y-6 py-2">
+      <div class="bg-gradient-to-r from-brand-navy via-slate-800 to-brand-dark text-white rounded-2xl p-6 sm:p-8 shadow-lg border border-slate-700 relative overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 opacity-10 text-9xl text-amber-400 pointer-events-none">
+          <i class="fa-solid fa-bolt-lightning"></i>
+        </div>
+        <div class="max-w-3xl relative z-10 space-y-2">
+          <div class="inline-flex items-center gap-2 bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-full text-xs font-semibold">
+            <i class="fa-solid fa-shield-halved"></i> Telangana State Southern Power Distribution Company Limited
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            Summer Action Plan (SAP 2027) Portal
+          </h2>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            Centralized infrastructure tracking across <b>22 Circles</b> and <b>4 Zones</b>. Each circle has its dedicated tab with pre-filled section templates. Agreements are strictly validated as <b>10-digit numbers starting with 5</b>.
+          </p>
+          <div class="pt-3 flex flex-wrap items-center gap-3">
+            <button onclick="switchView('circle-uploads')" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow transition">
+              <i class="fa-solid fa-cloud-arrow-up text-sm"></i> Open 22 Circle Upload Portals
+            </button>
+            <button onclick="switchView('daily')" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-2 shadow transition">
+              <i class="fa-solid fa-chart-pie text-sm"></i> View Zonal Daily Status
+            </button>
+            <button onclick="openAdminPortalTab()" class="px-3.5 py-2 rounded-lg bg-rose-900/90 hover:bg-rose-800 text-white font-bold text-xs flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-lock"></i> Admin Removal Portal
+            </button>
+            <button onclick="resetDataPrompt()" class="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-semibold text-xs flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-rotate-left"></i> Reset to 0 Baseline
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PORTAL CARDS -->
+      <div>
+        <div class="text-center sm:text-left mb-3">
+          <h3 class="text-base font-bold text-slate-800 flex items-center justify-center sm:justify-start gap-2">
+            <i class="fa-solid fa-arrow-pointer text-sky-600"></i> Select Module to Proceed
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- CARD 1: 22 CIRCLE UPLOADS -->
+          <div onclick="switchView('circle-uploads')" class="bg-white rounded-2xl border-2 border-slate-200 hover:border-amber-500 p-5 shadow-sm hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col justify-between group hover:-translate-y-1">
+            <div class="space-y-3">
+              <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl group-hover:bg-amber-600 group-hover:text-white transition shadow-inner">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded">22 Circle Tabs</span>
+                <h4 class="text-base font-bold text-slate-900 mt-1 group-hover:text-amber-700 transition">Circle Upload Portals</h4>
+                <p class="text-xs text-slate-500 mt-1">
+                  Download templates prefilled with your Circle Name at the top and your pre-mapped sections.
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-700">
+              <span>Open Circle Portals</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- CARD 2: ZONAL DAILY STATUS -->
+          <div onclick="switchView('daily')" class="bg-white rounded-2xl border-2 border-slate-200 hover:border-blue-500 p-5 shadow-sm hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col justify-between group hover:-translate-y-1">
+            <div class="space-y-3">
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl group-hover:bg-blue-600 group-hover:text-white transition shadow-inner">
+                <i class="fa-solid fa-chart-pie"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Zonal Format</span>
+                <h4 class="text-base font-bold text-slate-900 mt-1 group-hover:text-blue-700 transition">Zone Daily Status</h4>
+                <p class="text-xs text-slate-500 mt-1">
+                  Required, Sanctioned, Tenders in progress, Tenders completed, and Work in progress. Click any Zone to inspect all Circle tables!
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-700">
+              <span>Open Zonal Tables</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- CARD 3: PRIORITY ABSTRACT -->
+          <div onclick="switchView('abstract')" class="bg-white rounded-2xl border-2 border-slate-200 hover:border-sky-500 p-5 shadow-sm hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col justify-between group hover:-translate-y-1">
+            <div class="space-y-3">
+              <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl group-hover:bg-sky-600 group-hover:text-white transition shadow-inner">
+                <i class="fa-solid fa-list-ol"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2 py-0.5 rounded">Priority Matrix</span>
+                <h4 class="text-base font-bold text-slate-900 mt-1 group-hover:text-sky-700 transition">Work-Wise Priority</h4>
+                <p class="text-xs text-slate-500 mt-1">
+                  P1, P2, and P3 proposed vs. completed works across 33KV, 11KV, DTR, and PTR sub-sections for every Circle and Zone.
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-sky-700">
+              <span>View Priority Matrix</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- CARD 4: WORK ENTRY & UPDATES -->
+          <div onclick="switchView('status-update')" class="bg-white rounded-2xl border-2 border-slate-200 hover:border-emerald-500 p-5 shadow-sm hover:shadow-xl transition-all duration-200 cursor-pointer flex flex-col justify-between group hover:-translate-y-1">
+            <div class="space-y-3">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl group-hover:bg-emerald-600 group-hover:text-white transition shadow-inner">
+                <i class="fa-solid fa-toggle-on"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Field Operations</span>
+                <h4 class="text-base font-bold text-slate-900 mt-1 group-hover:text-emerald-700 transition">Update Status & Add Works</h4>
+                <p class="text-xs text-slate-500 mt-1">
+                  Form clears automatically on save. Row-level deletion and cascading dropdowns from 496 sections.
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+              <span>Update Field Data</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 1: DEDICATED 22 CIRCLE UPLOAD TABS ==================== -->
+    <div id="view-circle-uploads" class="hidden space-y-4">
+      
+      <!-- INSTRUCTION & ZONE FILTER -->
+      <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs no-print">
+        <div>
+          <h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-cloud-arrow-up text-amber-500"></i> Dedicated 22 Circle Upload Portals
+          </h2>
+          <p class="text-xs text-slate-500">Select your Circle tab below. Download your circle's pre-filled template or upload your circle's filled sheet.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <label class="font-bold text-slate-600">Filter by Zone:</label>
+          <select id="circleTabsZoneFilter" onchange="renderCircleTabsRibbon()" class="border rounded px-2.5 py-1 bg-slate-50 font-medium">
+            <option value="ALL">All 4 Zones (22 Circles)</option>
+            <option value="Metro Zone">Metro Zone (5 Circles)</option>
+            <option value="Medchal Zone">Medchal Zone (3 Circles)</option>
+            <option value="RR Zone">RR Zone (3 Circles)</option>
+            <option value="Rural Zone">Rural Zone (11 Circles)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 22 CIRCLE TABS CONTAINER -->
+      <div class="bg-white p-2.5 rounded-xl border border-slate-300 shadow-sm">
+        <div id="circleTabsRibbon" class="flex flex-wrap gap-1.5">
+          <!-- Dynamically generated 22 circle buttons -->
+        </div>
+      </div>
+
+      <!-- ACTIVE CIRCLE DEDICATED DASHBOARD & UPLOAD CARD -->
+      <div class="bg-white rounded-2xl border-2 border-amber-400 p-5 shadow-sm space-y-4">
+        
+        <!-- CARD HEADER -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center text-2xl font-black shadow">
+              <i class="fa-solid fa-city"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-lg font-bold text-slate-900" id="activeCircleNameTitle">MEDCHAL CIRCLE</h3>
+                <span class="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded" id="activeCircleZoneBadge">Medchal Zone</span>
+              </div>
+              <p class="text-xs text-slate-500">Dedicated upload workspace for <span id="activeCircleSectionCount" class="font-bold text-sky-700">0 Sections</span></p>
+            </div>
+          </div>
+
+          <!-- ACTIONS: PREFILLED DOWNLOAD & UPLOAD -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- DOWNLOAD PREFILLED TEMPLATE BUTTON -->
+            <button onclick="downloadActiveCirclePrefilledTemplate()" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg flex items-center gap-1.5 shadow transition">
+              <i class="fa-solid fa-file-arrow-down text-sm"></i> Download <span id="activeCircleBtnLabel">MEDCHAL</span> Pre-filled Template (.xlsx)
+            </button>
+
+            <!-- UPLOAD FOR THIS CIRCLE -->
+            <input type="file" id="activeCircleFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleActiveCircleExcelImport(event)">
+            <button onclick="document.getElementById('activeCircleFileInput').click()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg flex items-center gap-1.5 shadow transition">
+              <i class="fa-solid fa-file-arrow-up text-sm"></i> Upload <span id="activeCircleUploadLabel">MEDCHAL</span> Sheet (.xlsx)
+            </button>
+
+            <!-- VIEW WORKS BUTTON -->
+            <button onclick="openCircleAllWorksModal(currentActiveUploadCircle)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs rounded-lg flex items-center gap-1 transition">
+              <i class="fa-solid fa-table-list"></i> View All Works
+            </button>
+          </div>
+        </div>
+
+        <!-- SUMMARY STATS FOR ACTIVE CIRCLE -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold uppercase">Total Works Uploaded</span>
+            <p class="text-xl font-bold text-slate-900 mt-0.5" id="activeCircleTotalWorks">0</p>
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold uppercase">Valid Agreements Concluded</span>
+            <p class="text-xl font-bold text-indigo-700 mt-0.5" id="activeCircleValidAgr">0</p>
+            <span class="text-[9px] text-slate-400">10-digits starting with 5</span>
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold uppercase">Work Orders Taken</span>
+            <p class="text-xl font-bold text-blue-700 mt-0.5" id="activeCircleWOTaken">0</p>
+          </div>
+          <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+            <span class="text-[10px] text-slate-500 font-bold uppercase">Works Completed</span>
+            <p class="text-xl font-bold text-emerald-700 mt-0.5" id="activeCircleCompleted">0</p>
+          </div>
+        </div>
+
+        <!-- QUICK GUIDELINE NOTE -->
+        <div class="bg-amber-50 p-3 rounded-lg border border-amber-200 text-xs text-amber-900 space-y-1">
+          <p class="font-bold flex items-center gap-1">
+            <i class="fa-solid fa-circle-info text-amber-600"></i> How the Circle Pre-filled Template Works:
+          </p>
+          <p class="text-[11px] leading-relaxed">
+            When you click <b>"Download Pre-filled Template"</b>, an Excel sheet will download with your circle's name printed at the very top (Row 1). All sections and sub-divisions belonging to <b id="activeCircleNoteName">MEDCHAL</b> are already pre-filled in the rows! Simply open the file offline, enter your numbers, and upload it back.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== VIEW 2: ZONAL DAILY STATUS DASHBOARD ==================== -->
+    <div id="view-daily" class="hidden space-y-4">
+      <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs no-print">
+        <div class="flex items-center gap-2">
+          <label class="font-bold text-slate-700"><i class="fa-solid fa-filter text-amber-500 mr-1"></i> Select Zonal View:</label>
+          <select id="dailyStatusZoneFilter" onchange="renderDailyStatusDashboard()" class="border border-slate-300 rounded px-2.5 py-1.5 font-bold text-brand-navy bg-slate-50">
+            <option value="ALL">All Zones & TGSPDCL Consolidated</option>
+            <option value="TGSPDCL">TGSPDCL Overall Only</option>
+            <option value="Metro Zone">Metro Zone (5 Circles)</option>
+            <option value="Medchal Zone">Medchal Zone (3 Circles)</option>
+            <option value="RR Zone">RR Zone (3 Circles)</option>
+            <option value="Rural Zone">Rural Zone (11 Circles)</option>
+          </select>
+        </div>
+
+        <div class="text-[11px] text-slate-500">
+          <i class="fa-solid fa-info-circle text-sky-600 mr-1"></i> Agreements are counted only when a <b>10-digit number starting with 5</b> is recorded.
+        </div>
+      </div>
+      <div id="dailyStatusContainer" class="space-y-4"></div>
+    </div>
+
+    <!-- ==================== VIEW 3: WORK-WISE PRIORITY ABSTRACT ==================== -->
+    <div id="view-abstract" class="hidden space-y-4">
+      <div class="bg-white rounded-xl border border-slate-300 shadow-sm overflow-hidden">
+        <div class="bg-slate-800 text-white p-2.5 flex items-center justify-between text-xs">
+          <span class="font-bold tracking-wide flex items-center gap-2">
+            <i class="fa-solid fa-list-ol text-amber-400"></i> WORK-WISE PRIORITY PROPOSED VS. COMPLETED STATEMENT (ALL TGSPDCL)
+          </span>
+          <span class="text-[10px] text-slate-300">Priority 1 = Highest Priority</span>
+        </div>
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-xs text-left border-collapse" id="workWisePriorityTable"></table>
+        </div>
+      </div>
+
+      <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs no-print">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="font-bold text-slate-700 mr-1">Filter Work Head:</span>
+          <button onclick="setPriorityAbstractMode('ALL')" id="prio-mode-btn-ALL" class="px-2.5 py-1 rounded font-bold bg-brand-navy text-white shadow-xs">All Works Consolidated</button>
+          <button onclick="setPriorityAbstractMode('11KV')" id="prio-mode-btn-11KV" class="px-2.5 py-1 rounded font-medium bg-slate-100 hover:bg-slate-200 text-slate-700">11KV Works</button>
+          <button onclick="setPriorityAbstractMode('33KV')" id="prio-mode-btn-33KV" class="px-2.5 py-1 rounded font-medium bg-slate-100 hover:bg-slate-200 text-slate-700">33KV Works</button>
+          <button onclick="setPriorityAbstractMode('DTR')" id="prio-mode-btn-DTR" class="px-2.5 py-1 rounded font-medium bg-slate-100 hover:bg-slate-200 text-slate-700">DTR Works</button>
+          <button onclick="setPriorityAbstractMode('PTR')" id="prio-mode-btn-PTR" class="px-2.5 py-1 rounded font-medium bg-slate-100 hover:bg-slate-200 text-slate-700">PTR Works</button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-600">Zone:</span>
+          <select id="prioFilterZone" onchange="renderPriorityAbstractTable()" class="border border-slate-300 rounded px-2 py-1 bg-slate-50 font-medium">
+            <option value="ALL">All 4 Zones</option>
+            <option value="Rural Zone">Rural Zone (11 Circles)</option>
+            <option value="Medchal Zone">Medchal Zone (3 Circles)</option>
+            <option value="RR Zone">RR Zone (3 Circles)</option>
+            <option value="Metro Zone">Metro Zone (5 Circles)</option>
+          </select>
+          <button onclick="toggleExpandAll(true)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-semibold border text-[11px]"><i class="fa-solid fa-angles-down text-[9px]"></i> Expand</button>
+          <button onclick="toggleExpandAll(false)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-semibold border text-[11px]"><i class="fa-solid fa-angles-up text-[9px]"></i> Collapse</button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg border border-slate-300 shadow-sm overflow-hidden">
+        <div class="p-2.5 bg-gradient-to-r from-slate-800 to-slate-900 text-white flex items-center justify-between text-xs">
+          <span class="font-bold tracking-wide flex items-center gap-2">
+            <i class="fa-solid fa-table-list text-amber-400"></i> CIRCLE-WISE PRIORITY WORKS COMPLETED STATEMENT
+          </span>
+          <span class="text-[10px] text-slate-300" id="prioTableSubtitle">All 22 Circles Jurisdiction</span>
+        </div>
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-xs text-left border-collapse" id="workWisePriorityAbstractTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 4: AUTOMATIC WEEKLY PROGRESS ==================== -->
+    <div id="view-weekly" class="hidden space-y-3">
+      <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs no-print">
+        <div class="flex items-center gap-3">
+          <span class="bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow-xs">
+            <i class="fa-solid fa-clock-rotate-left"></i> Current Review Period: <span id="autoActiveWeekBadge" class="underline decoration-amber-400 font-extrabold"></span>
+          </span>
+          <span class="text-[11px] text-slate-500 italic">
+            (Auto-registered based on timeline starting from 08.11.2026. No manual selection required.)
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <label class="font-bold text-slate-700">Filter Work Head:</label>
+          <select id="weeklyFilterFamily" onchange="renderWeeklyConsolidatedTable()" class="border border-slate-300 rounded px-2 py-1 bg-slate-50 font-medium">
+            <option value="ALL">All 4 Work Heads</option>
+            <option value="11KV">11KV Works</option>
+            <option value="33KV">33KV Works</option>
+            <option value="DTR">DTR Works</option>
+            <option value="PTR">PTR Works</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg border border-slate-300 shadow-sm overflow-hidden">
+        <div class="p-2.5 bg-gradient-to-r from-slate-800 to-slate-900 text-white flex items-center justify-between text-xs">
+          <span class="font-bold tracking-wide"><i class="fa-solid fa-calendar-check text-emerald-400 mr-1.5"></i> CONSOLIDATED WEEKLY WORK PROGRESS (TIMELINE STARTING 08.11.2026)</span>
+          <span class="text-[10px] text-slate-300" id="weeklyTableHeaderSubtitle"></span>
+        </div>
+        <div class="overflow-x-auto custom-scroll">
+          <table class="w-full text-xs text-left border-collapse" id="weeklyConsolidatedTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 5: TAB A - UPDATE WORK STATUS & REMOVE DATA ==================== -->
+    <div id="view-status-update" class="hidden space-y-3">
+      <div class="bg-white p-4 rounded-lg border border-slate-300 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b pb-3 mb-3">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-toggle-on text-sky-600"></i> Change Work Status (Yes/No) & Remove Works
+            </h2>
+            <p class="text-xs text-slate-500">Agreements are counted only if entered as a 10-digit number starting with 5 (e.g. 5600551538). Otherwise counted as not created.</p>
+          </div>
+          <button onclick="saveActiveStatusUpdates()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded flex items-center gap-1.5 shadow">
+            <i class="fa-solid fa-floppy-disk"></i> Save & Recalculate Reports
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-slate-50 p-2.5 rounded border border-slate-200 text-xs">
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Select Circle</label>
+            <select id="statusCircleSelect" onchange="onStatusFilterChange()" class="w-full border rounded p-1.5 bg-white font-medium"></select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Select Division</label>
+            <select id="statusDivisionSelect" onchange="loadStatusUpdateRows()" class="w-full border rounded p-1.5 bg-white font-medium"></select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-600 mb-1">Work Sub-Section</label>
+            <select id="statusSubSecSelect" onchange="loadStatusUpdateRows()" class="w-full border rounded p-1.5 bg-white font-semibold text-sky-700">
+              <option value="11KV Interlinking">11 Kv Lines Interlinking Works</option>
+              <option value="11KV Bifurcation">11KV Bif/Addl. Feeders</option>
+              <option value="DTR Enhancement">DTRs (Enhancement)</option>
+              <option value="DTR Additional">DTRs (Additional)</option>
+              <option value="33KV Bifurcation">33KV Bifurcation Works</option>
+              <option value="33KV Interlinking">33KV Interlinking Works</option>
+              <option value="PTR Additional">PTR Additional Works</option>
+              <option value="PTR Enhancement">PTR Enhancement Works</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="statusUpdateToast" class="hidden mt-2 p-2 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs rounded flex items-center justify-between">
+          <span><i class="fa-solid fa-circle-check mr-1.5"></i> Status updates saved and weekly progress recomputed automatically!</span>
+          <button onclick="this.parentElement.classList.add('hidden')" class="font-bold">&times;</button>
+        </div>
+
+        <div class="mt-3 overflow-x-auto custom-scroll border border-slate-300 rounded max-h-[520px]">
+          <table class="w-full text-xs text-left border-collapse" id="statusUpdateTable">
+            <thead class="bg-slate-200 text-slate-700 sticky top-0 border-b border-slate-300 z-10" id="statusThead"></thead>
+            <tbody id="statusTbody" class="divide-y divide-slate-200 bg-white"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 6: TAB B - ADD NEW WORK (AUTO CLEARS ON SAVE) ==================== -->
+    <div id="view-add-work" class="hidden space-y-3">
+      <div class="bg-white p-5 rounded-lg border border-slate-300 shadow-sm max-w-4xl mx-auto">
+        <div class="border-b pb-3 mb-4 flex items-center justify-between">
+          <div>
+            <h2 class="text-sm md:text-base font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-circle-plus text-emerald-600"></i> Add New Infrastructure Work
+            </h2>
+            <p class="text-xs text-slate-500">Input fields automatically clear immediately upon save so there is no confusion.</p>
+          </div>
+          <span class="text-[11px] bg-sky-50 text-sky-800 font-bold px-2.5 py-1 rounded border border-sky-200">
+            Auto-Clears on Submit
+          </span>
+        </div>
+
+        <form id="addNewWorkForm" onsubmit="handleAddNewWorkSubmit(event)" class="space-y-4 text-xs">
+          <!-- 4-TIER CASCADING LOCATION DROPDOWNS -->
+          <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-3">
+            <span class="font-bold text-brand-navy uppercase tracking-wider text-[11px] block border-b pb-1">
+              <i class="fa-solid fa-sitemap text-sky-600 mr-1"></i> Administrative Jurisdiction (496 Sections Database)
+            </span>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">1. Circle *</label>
+                <select id="addCircleSelect" onchange="onAddCircleChange()" class="w-full border rounded p-1.5 bg-white font-medium focus:ring-1 focus:ring-sky-500" required></select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">2. Division *</label>
+                <select id="addDivisionSelect" onchange="onAddDivisionChange()" class="w-full border rounded p-1.5 bg-white font-medium focus:ring-1 focus:ring-sky-500" required></select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">3. Sub-Division *</label>
+                <select id="addSubDivSelect" onchange="onAddSubDivChange()" class="w-full border rounded p-1.5 bg-white font-medium focus:ring-1 focus:ring-sky-500" required></select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">4. Section Name *</label>
+                <select id="addSectionSelect" class="w-full border rounded p-1.5 bg-white font-bold text-sky-800 focus:ring-1 focus:ring-sky-500" required></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- WORK HEAD & ATTRIBUTES -->
+          <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-3">
+            <span class="font-bold text-brand-navy uppercase tracking-wider text-[11px] block border-b pb-1">
+              <i class="fa-solid fa-list-check text-amber-600 mr-1"></i> Work Specifications & Engineering Status
+            </span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">Work Sub-Section *</label>
+                <select id="addWorkSubSecSelect" class="w-full border rounded p-1.5 bg-white font-bold text-brand-navy" required>
+                  <option value="11KV Interlinking">11 Kv Lines Interlinking Works</option>
+                  <option value="11KV Bifurcation">11KV Bif/Addl. Feeders</option>
+                  <option value="DTR Enhancement">DTRs (Enhancement)</option>
+                  <option value="DTR Additional">DTRs (Additional)</option>
+                  <option value="33KV Bifurcation">33KV Bifurcation Works</option>
+                  <option value="33KV Interlinking">33KV Interlinking Works</option>
+                  <option value="PTR Additional">PTR Additional Works</option>
+                  <option value="PTR Enhancement">PTR Enhancement Works</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">Name / Description of Work *</label>
+                <input type="text" id="addWorkName" placeholder="e.g. Interlinking feeder line near..." class="w-full border rounded p-1.5 bg-white font-medium" required>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">Estimate No</label>
+                <input type="text" id="addEstimateNo" placeholder="e.g. EST/2026/001" class="w-full border rounded p-1.5 bg-white">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">Sanctioned (Yes/No) *</label>
+                <select id="addSanctioned" class="w-full border rounded p-1.5 bg-white font-semibold text-blue-700">
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">
+                  Agreement No <span class="text-amber-700 font-bold">(10-digits starting with 5)</span>
+                </label>
+                <input type="text" id="addAgreementNo" maxlength="10" placeholder="e.g. 5600551538 (or leave blank)" class="w-full border rounded p-1.5 bg-white font-mono">
+                <span class="text-[10px] text-slate-400">Must be a 10-digit number starting with 5 to count as concluded</span>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">Work order taken (Yes/No)</label>
+                <select id="addWorkOrder" class="w-full border rounded p-1.5 bg-white font-semibold">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">Material / DTR / PTR Drawn (Yes/No)</label>
+                <select id="addMaterialDrawn" class="w-full border rounded p-1.5 bg-white font-semibold">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">Target Date of Completion</label>
+                <input type="date" id="addTargetDate" class="w-full border rounded p-1.5 bg-white">
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">Work completed (Yes/No) *</label>
+                <select id="addWorkCompleted" class="w-full border rounded p-1.5 bg-white font-bold text-emerald-700">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes (Completed)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-amber-800 mb-1">Priority (1/2/3) *</label>
+                <select id="addPriority" class="w-full border rounded p-1.5 bg-amber-50 font-bold text-amber-900 border-amber-300">
+                  <option value="1">Priority 1 (Highest)</option>
+                  <option value="2">Priority 2 (Medium)</option>
+                  <option value="3">Priority 3 (Normal)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" onclick="clearAddNewWorkFields()" class="px-4 py-2 border rounded text-slate-600 hover:bg-slate-50 font-medium">Clear Fields</button>
+            <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-check"></i> Submit Work & Auto-Calculate Reports
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== VIEW 7: TAB C - ADMIN PORTAL ==================== -->
+    <div id="view-admin" class="hidden space-y-4">
+      <div class="bg-gradient-to-r from-rose-950 via-slate-900 to-rose-900 text-white p-4 rounded-xl border border-rose-800 shadow-md flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-rose-600 flex items-center justify-center text-xl font-bold text-white shadow-inner">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold tracking-tight text-white flex items-center gap-2">
+              ADMIN CONTROL CONSOLE — SAP 2027 TGSPDCL
+            </h2>
+            <p class="text-xs text-rose-200">
+              Authenticated Admin: <b class="text-amber-300">ADMIN</b> | Linked Email: <b class="text-white">cgmoandmcpdcl@gmail.com</b>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="adminLogout()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-rose-200 hover:text-white rounded text-xs font-semibold flex items-center gap-1 border border-rose-800">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout Admin
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- CARD 1: SELECTIVE DATA REMOVAL -->
+        <div class="lg:col-span-2 bg-white rounded-xl border border-slate-300 p-4 shadow-sm space-y-4">
+          <div class="border-b pb-2 flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-trash-can text-rose-600"></i> Bulk Removal of Uploaded Excel Data Sheets
+              </h3>
+              <p class="text-xs text-slate-500">Purge entire uploaded sheets or specific work heads across circles.</p>
+            </div>
+            <span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded">Admin Only</span>
+          </div>
+
+          <div class="bg-rose-50/50 p-3 rounded-lg border border-rose-200 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Select Target Circle to Purge</label>
+              <select id="adminPurgeCircleSelect" class="w-full border rounded p-1.5 bg-white font-medium"></select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Target Work Head to Remove</label>
+              <select id="adminPurgeSubSecSelect" class="w-full border rounded p-1.5 bg-white font-medium">
+                <option value="ALL">All Work Heads (Full Circle Purge)</option>
+                <option value="11KV Interlinking">11 Kv Lines Interlinking Works</option>
+                <option value="11KV Bifurcation">11KV Bif/Addl. Feeders</option>
+                <option value="DTR Enhancement">DTRs (Enhancement)</option>
+                <option value="DTR Additional">DTRs (Additional)</option>
+                <option value="33KV Bifurcation">33KV Bifurcation Works</option>
+                <option value="33KV Interlinking">33KV Interlinking Works</option>
+                <option value="PTR Additional">PTR Additional Works</option>
+                <option value="PTR Enhancement">PTR Enhancement Works</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <button onclick="executeAdminTargetPurge()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded text-xs font-bold flex items-center gap-1.5 shadow">
+              <i class="fa-solid fa-trash-arrow-up"></i> Purge Selected Uploaded Data
+            </button>
+            <button onclick="executeAdminMasterFactoryReset()" class="px-3.5 py-2 bg-slate-900 hover:bg-black text-amber-300 rounded text-xs font-bold flex items-center gap-1.5 shadow">
+              <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> Master Reset All Circles (0 Baseline)
+            </button>
+          </div>
+
+          <!-- SUMMARY TABLE -->
+          <div class="pt-3 border-t">
+            <h4 class="text-xs font-bold text-slate-700 mb-2 flex items-center justify-between">
+              <span><i class="fa-solid fa-table-list text-sky-600 mr-1"></i> Current Uploaded Works Inventory per Circle</span>
+              <span class="text-[10px] text-slate-500 font-normal">Click 'Purge' to wipe all works for that specific circle</span>
+            </h4>
+            <div class="overflow-x-auto custom-scroll border rounded max-h-64">
+              <table class="w-full text-xs text-left border-collapse">
+                <thead class="bg-slate-100 text-slate-700 sticky top-0 border-b">
+                  <tr>
+                    <th class="p-1.5 pl-3">Circle</th>
+                    <th class="p-1.5 text-center">Zone</th>
+                    <th class="p-1.5 text-right">Total Works</th>
+                    <th class="p-1.5 text-right">Completed</th>
+                    <th class="p-1.5 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 bg-white" id="adminInventoryTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: PASSWORD MANAGEMENT -->
+        <div class="bg-white rounded-xl border border-slate-300 p-4 shadow-sm space-y-4">
+          <div class="border-b pb-2">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-key text-amber-500"></i> Password & Security Settings
+            </h3>
+            <p class="text-xs text-slate-500">Manage credentials for admin account (ID: ADMIN)</p>
+          </div>
+
+          <form onsubmit="handleAdminChangePassword(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Current Password *</label>
+              <input type="password" id="adminCurrentPassInput" class="w-full border rounded p-1.5 bg-slate-50" required>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">New Password *</label>
+              <input type="password" id="adminNewPassInput" class="w-full border rounded p-1.5 bg-white" required>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Confirm New Password *</label>
+              <input type="password" id="adminConfirmPassInput" class="w-full border rounded p-1.5 bg-white" required>
+            </div>
+            <button type="submit" class="w-full py-2 bg-brand-navy hover:bg-slate-800 text-white rounded font-bold shadow-xs">
+              Update Admin Password
+            </button>
+          </form>
+
+          <div class="border-t pt-3 space-y-2">
+            <p class="text-[11px] text-slate-600 font-medium">Forgot or need to change password externally?</p>
+            <button onclick="triggerEmailPasswordReset()" class="w-full py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition">
+              <i class="fa-solid fa-envelope"></i> Send Password Reset Link to Mail
+            </button>
+            <p class="text-[10px] text-slate-400 italic text-center">
+              Official Email: <b>cgmoandmcpdcl@gmail.com</b>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== MODAL: ADMIN LOGIN ==================== -->
+  <div id="adminLoginModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-300 w-full max-w-md overflow-hidden animate-scale-up">
+      <div class="bg-brand-dark text-white p-4 flex items-center justify-between border-b-2 border-brand-accent">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded bg-rose-600 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Admin Authentication</h3>
+            <p class="text-[10px] text-slate-300">Restricted data removal & management console</p>
+          </div>
+        </div>
+        <button onclick="closeAdminLoginModal()" class="w-6 h-6 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleAdminLoginSubmit(event)" class="p-5 space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Admin User ID</label>
+          <input type="text" id="adminLoginId" placeholder="Default: ADMIN" class="w-full border rounded p-2 bg-slate-50 font-bold text-slate-800 uppercase focus:ring-1 focus:ring-rose-500" required>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Password</label>
+          <input type="password" id="adminLoginPassword" placeholder="Default: ADMIN1" class="w-full border rounded p-2 bg-slate-50 font-bold focus:ring-1 focus:ring-rose-500" required>
+        </div>
+
+        <div id="adminLoginErrorMsg" class="hidden p-2 rounded bg-rose-50 border border-rose-300 text-rose-700 font-semibold text-[11px]">
+          <i class="fa-solid fa-circle-exclamation mr-1"></i> Invalid Admin credentials. Please check your ID and password.
+        </div>
+
+        <div class="flex items-center justify-between text-[11px] pt-1">
+          <a href="javascript:void(0)" onclick="triggerEmailPasswordReset()" class="text-sky-700 hover:underline font-semibold flex items-center gap-1">
+            <i class="fa-solid fa-key"></i> Forgot Password / Send Link
+          </a>
+          <span class="text-slate-400">cgmoandmcpdcl@gmail.com</span>
+        </div>
+
+        <div class="pt-2 flex items-center gap-2">
+          <button type="submit" class="flex-1 py-2 bg-rose-700 hover:bg-rose-800 text-white font-bold rounded shadow transition">
+            Login to Admin Console
+          </button>
+          <button type="button" onclick="closeAdminLoginModal()" class="px-3 py-2 border rounded text-slate-600 hover:bg-slate-100 font-medium">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CIRCLE ALL-WORKS VIEWER & REMOVER ==================== -->
+  <div id="circleWorksModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-300 w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden">
+      
+      <!-- TOP BAR -->
+      <div class="bg-brand-dark text-white p-3.5 flex items-center justify-between border-b-2 border-brand-accent">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded bg-sky-600 flex items-center justify-center font-bold text-sm shadow">
+            <i class="fa-solid fa-city"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold leading-tight flex items-center gap-2">
+              <span id="circleModalTitle">Circle Name</span> — All Uploaded Works Inventory
+            </h3>
+            <p class="text-[11px] text-slate-300" id="circleModalSubtitle">View, edit, or remove works for this circle</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="exportActiveCircleWorksExcel()" class="text-xs bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded text-white font-medium flex items-center gap-1 shadow">
+            <i class="fa-solid fa-file-excel"></i> Export Circle Sheet
+          </button>
+          <button onclick="closeCircleWorksModal()" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- FILTER / SEARCH TOOLBAR IN MODAL -->
+      <div class="bg-slate-100 p-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2">
+          <label class="font-bold text-slate-600">Filter Work Head:</label>
+          <select id="modalWorkHeadFilter" onchange="renderCircleWorksModalTable()" class="border rounded px-2 py-1 bg-white font-medium">
+            <option value="ALL">All Work Heads</option>
+            <option value="11KV Interlinking">11KV Interlinking</option>
+            <option value="11KV Bifurcation">11KV Bifurcation</option>
+            <option value="DTR Enhancement">DTR Enhancement</option>
+            <option value="DTR Additional">DTR Additional</option>
+            <option value="33KV Bifurcation">33KV Bifurcation</option>
+            <option value="33KV Interlinking">33KV Interlinking</option>
+            <option value="PTR Additional">PTR Additional</option>
+            <option value="PTR Enhancement">PTR Enhancement</option>
+          </select>
+
+          <label class="font-bold text-slate-600 ml-2">Priority:</label>
+          <select id="modalPriorityFilter" onchange="renderCircleWorksModalTable()" class="border rounded px-2 py-1 bg-white font-medium">
+            <option value="ALL">All Priorities</option>
+            <option value="1">Priority 1 (Highest)</option>
+            <option value="2">Priority 2 (Medium)</option>
+            <option value="3">Priority 3 (Normal)</option>
+          </select>
+        </div>
+
+        <div class="relative w-64">
+          <input type="text" id="modalSearchInput" onkeyup="renderCircleWorksModalTable()" placeholder="Search work name, section..." class="w-full border rounded px-2 py-1 pl-7 text-xs bg-white">
+          <i class="fa-solid fa-magnifying-glass absolute left-2 top-2 text-slate-400"></i>
+        </div>
+      </div>
+
+      <!-- TABLE CONTAINER -->
+      <div class="flex-1 overflow-auto custom-scroll p-3">
+        <table class="w-full text-xs text-left border-collapse border border-slate-200" id="circleModalWorksTable"></table>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="bg-slate-50 p-2.5 border-t border-slate-200 text-xs flex items-center justify-between">
+        <span class="text-slate-600 font-semibold" id="circleModalCountText">Total Works: 0</span>
+        <button onclick="closeCircleWorksModal()" class="px-4 py-1 bg-slate-700 hover:bg-slate-800 text-white rounded font-medium">Close</button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="bg-brand-dark text-slate-400 text-[11px] py-2 px-4 border-t border-slate-800 no-print text-center">
+    SAP 2027 TGSPDCL — Operation & Planning Wing (22 Dedicated Circle Upload Hubs & Pre-filled Formats).
+  </footer>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // 22 CIRCLES LIST (INCLUDING SCADA)
+    const ALL_22_CIRCLES = [
+      "BANJARA HILLS", "HYDERABAD CENTRAL", "HYDERABAD SOUTH", "SECUNDERABAD", "SCADA",
+      "HABSIGUDA", "MEDCHAL", "SANGAREDDY",
+      "CYBERCITY", "RAJENDRA NAGAR", "SAROORNAGAR",
+      "GADWAL", "MAHABOOBNAGAR", "MEDAK", "NAGARKURNOOL", "NALGONDA", "NARAYANPET", "SIDDIPET", "SURYAPET", "VIKARABAD", "WANAPARTHY", "YADADRI"
+    ];
+
+    let currentActiveUploadCircle = "MEDCHAL";
+
+    // 1. 22 CIRCLE TABS RIBBON RENDERER
+    function renderCircleTabsRibbon() {
+      const container = document.getElementById('circleTabsRibbon');
+      const filterZone = document.getElementById('circleTabsZoneFilter').value;
+
+      let circlesToDisplay = [];
+      if (filterZone === "ALL") {
+        circlesToDisplay = ALL_22_CIRCLES;
+      } else {
+        circlesToDisplay = ZONES_DEF[filterZone] || [];
+      }
+
+      container.innerHTML = circlesToDisplay.map(c => {
+        const isActive = c === currentActiveUploadCircle;
+        let workCount = 0;
+        ALL_SUBSECTIONS.forEach(s => {
+          workCount += (DB.circles[c]?.works[s] || []).length;
+        });
+
+        return `
+          <button onclick="selectActiveUploadCircle('${c}')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border ${isActive ? 'bg-amber-500 text-slate-950 border-amber-600 shadow-sm' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'}">
+            <span>${c}</span>
+            <span class="text-[10px] px-1.5 py-0.2 rounded ${isActive ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'}">${workCount}</span>
+          </button>
+        `;
+      }).join('');
+
+      updateActiveCircleUploadCard();
+    }
+
+    function selectActiveUploadCircle(circleName) {
+      currentActiveUploadCircle = circleName;
+      renderCircleTabsRibbon();
+    }
+
+    function updateActiveCircleUploadCard() {
+      const c = currentActiveUploadCircle;
+      const zone = DB.circles[c]?.zone || "Zone";
+
+      document.getElementById('activeCircleNameTitle').innerText = `${c} CIRCLE`;
+      document.getElementById('activeCircleZoneBadge').innerText = zone;
+      document.getElementById('activeCircleBtnLabel').innerText = c;
+      document.getElementById('activeCircleUploadLabel').innerText = c;
+      document.getElementById('activeCircleNoteName').innerText = c;
+
+      let secCount = 0;
+      SECTION_DATABASE.forEach(([cir]) => {
+        if (cir.trim().toUpperCase() === c) secCount++;
+      });
+      document.getElementById('activeCircleSectionCount').innerText = `${secCount} Pre-mapped Sections`;
+
+      let tot = 0, agr = 0, wo = 0, comp = 0;
+      ALL_SUBSECTIONS.forEach(s => {
+        (DB.circles[c]?.works[s] || []).forEach(r => {
+          tot++;
+          if (isValidAgreementNo(r.agreementNo)) agr++;
+          if (r.workOrderTaken === "Yes") wo++;
+          if (r.workCompleted === "Yes") comp++;
+        });
+      });
+
+      document.getElementById('activeCircleTotalWorks').innerText = tot;
+      document.getElementById('activeCircleValidAgr').innerText = agr;
+      document.getElementById('activeCircleWOTaken').innerText = wo;
+      document.getElementById('activeCircleCompleted').innerText = comp;
+    }
+
+    // 2. PREFILLED CIRCLE TEMPLATE GENERATOR
+    function downloadActiveCirclePrefilledTemplate() {
+      const c = currentActiveUploadCircle;
+      const wb = XLSX.utils.book_new();
+
+      const row1 = [
+        `Summer Action Plan 2027 — ${c} CIRCLE`, "", "", "", "",
+        "11 Kv Lines Interlinking Works", "", "", "", "", "", "", "",
+        "11KV Bif/Addl. Feeders", "", "", "", "", "", "", "",
+        "DTRs (Enhancement)", "", "", "", "", "", "", "", "",
+        "DTRs (Additional)", "", "", "", "", "", "", "", "",
+        "33KV Bifurcation Works", "", "", "", "", "", "", "",
+        "33KV Interlinking Works", "", "", "", "", "", "", "",
+        "PTR Additional Works", "", "", "", "", "", "", "", "",
+        "PTR Enhancement Works", "", "", "", "", "", "", "", ""
+      ];
+
+      const row2 = [
+        "Sl.No.", "Circle", "Division", "Sub-Division", "Name of the Section",
+        "Estimate No", "Sanctioned (Yes/no)", "Agreement No", "Work order taken (Yes/No)", "Major Material Drawn i.e. PTR/DTR/Conductor/Cable/VCB (Yes/No)", "Target Date of Completion", "Work completed (Yes/No)", "Priority (1/2/3)",
+        "Estimate No", "Sanctioned (Yes/no)", "Agreement No", "Work order taken (Yes/No)", "Major Material Drawn i.e. PTR/DTR/Conductor/Cable/VCB (Yes/No)", "Target Date of Completion", "Work completed (Yes/No)", "Priority (1/2/3)",
+        "Estimate No", "Sanctioned (Yes/no)", "Agreement No", "Work order taken (Yes/No)", "DTR Drawn (Yes/No)", "All DTRs Charged (Yes/No)", "Target Date of Completion", "Work completed (Yes/No)", "Priority (1/2/3)",
+        "Estimate No", "Sanctioned (Yes/no)", "Agreement No", "Work order taken (Yes/No)", "DTR Drawn (Yes/No)", "All DTRs Charged (Yes/No)", "Target Date of Completion", "Work completed (Yes/No)", "Priority (1/2/3)",
+        "Estimate No", "Sanctioned (Yes/no)", "Agreement No", "Work order taken (Yes/No)", "Major Material Drawn i.e. PTR/DTR/Conductor/Cable/VCB (Yes/No)", "Target Date of Completion", "Work completed (Yes/No)", "Priority (1/2/3)",
+        "Estimate No", "Sanctioned (Yes/no)", "Agreement No", "Work order taken (Yes/No)", "Major Material Drawn i.e. PTR/DTR/Conductor/Cable/VCB (Yes/No)", "Target Date of Completion", "Work completed (Yes/No)", "Priority (1/2/3)",
+        "Estimate No", "Sanctioned (Yes/no)", "Agreement No", "Work order taken (Yes/No)", "PTR Drawn (Yes/No)", "PTR's Charged (Yes/No)", "Target Date of Completion", "Work completed (Yes/No)", "Priority (1/2/3)",
+        "Estimate No", "Sanctioned (Yes/no)", "Agreement No", "Work order taken (Yes/No)", "PTR Drawn (Yes/No)", "PTR's Charged (Yes/No)", "Target Date of Completion", "Work completed (Yes/No)", "Priority (1/2/3)"
+      ];
+
+      const prefilledRows = [];
+      let sl = 1;
+      SECTION_DATABASE.forEach(([cir, div, subDiv, sec]) => {
+        if (cir.trim().toUpperCase() === c) {
+          const row = [sl++, c, div.trim(), subDiv.trim(), sec.trim()];
+          for (let k = 0; k < 68; k++) row.push("");
+          prefilledRows.push(row);
+        }
+      });
+
+      if (prefilledRows.length === 0) {
+        prefilledRows.push([1, c, `${c} Division`, `${c} SD`, `${c} Main Section`, ...Array(68).fill("")]);
+      }
+
+      const ws = XLSX.utils.aoa_to_sheet([row1, row2, ...prefilledRows]);
+
+      ws['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } },
+        { s: { r: 0, c: 5 }, e: { r: 0, c: 12 } },
+        { s: { r: 0, c: 13 }, e: { r: 0, c: 20 } },
+        { s: { r: 0, c: 21 }, e: { r: 0, c: 29 } },
+        { s: { r: 0, c: 30 }, e: { r: 0, c: 38 } },
+        { s: { r: 0, c: 39 }, e: { r: 0, c: 46 } },
+        { s: { r: 0, c: 47 }, e: { r: 0, c: 54 } },
+        { s: { r: 0, c: 55 }, e: { r: 0, c: 63 } },
+        { s: { r: 0, c: 64 }, e: { r: 0, c: 72 } }
+      ];
+
+      XLSX.utils.book_append_sheet(wb, ws, `${c.substring(0, 25)}_Template`);
+      XLSX.writeFile(wb, `SAP2027_${c.replace(/\s+/g, '_')}_Prefilled_Template.xlsx`);
+    }
+
+    // 3. TARGETED CIRCLE EXCEL IMPORTER
+    function handleActiveCircleExcelImport(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const targetCircle = currentActiveUploadCircle;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const raw = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+
+          if (!raw || raw.length < 3) {
+            alert("No data rows found in uploaded sheet.");
+            return;
+          }
+
+          let hIdx = -1;
+          for (let r = 0; r < Math.min(8, raw.length); r++) {
+            const str = raw[r].join(" ").toLowerCase();
+            if (str.includes("estimate") || str.includes("sanctioned") || str.includes("section")) {
+              hIdx = r;
+              break;
+            }
+          }
+          if (hIdx === -1) { alert("Header row could not be identified."); return; }
+
+          const action = confirm(`Upload target: ${targetCircle} CIRCLE.\n\nClick OK to REPLACE current works for ${targetCircle}, or CANCEL to APPEND.`);
+          if (action) {
+            ALL_SUBSECTIONS.forEach(s => DB.circles[targetCircle].works[s] = []);
+          }
+
+          let count = 0;
+          for (let i = hIdx + 1; i < raw.length; i++) {
+            const r = raw[i];
+            if (!r || r.length < 5) continue;
+
+            const div = String(r[2] || "").trim() || `${targetCircle} Division`;
+            const subDiv = String(r[3] || "").trim() || `${targetCircle} SD`;
+            const sec = String(r[4] || "").trim() || "Section";
+
+            parseAndPushWork(targetCircle, "11KV Interlinking", div, subDiv, sec, r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12]);
+            parseAndPushWork(targetCircle, "11KV Bifurcation", div, subDiv, sec, r[13], r[14], r[15], r[16], r[17], r[18], r[19], r[20]);
+            parseAndPushWork(targetCircle, "DTR Enhancement", div, subDiv, sec, r[21], r[22], r[23], r[24], r[25], r[27], r[28], r[29]);
+            parseAndPushWork(targetCircle, "DTR Additional", div, subDiv, sec, r[30], r[31], r[32], r[33], r[34], r[36], r[37], r[38]);
+            parseAndPushWork(targetCircle, "33KV Bifurcation", div, subDiv, sec, r[39], r[40], r[41], r[42], r[43], r[44], r[45], r[46]);
+            parseAndPushWork(targetCircle, "33KV Interlinking", div, subDiv, sec, r[47], r[48], r[49], r[50], r[51], r[52], r[53], r[54]);
+            parseAndPushWork(targetCircle, "PTR Additional", div, subDiv, sec, r[55], r[56], r[57], r[58], r[59], r[61], r[62], r[63]);
+            parseAndPushWork(targetCircle, "PTR Enhancement", div, subDiv, sec, r[64], r[65], r[66], r[67], r[68], r[70], r[71], r[72]);
+
+            count++;
+          }
+
+          saveDatabase();
+          recalculateAndRefreshAll();
+          renderCircleTabsRibbon();
+          alert(`Successfully uploaded and mapped ${count} sections for ${targetCircle} Circle!`);
+        } catch(err) {
+          console.error(err);
+          alert("Error parsing template.");
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // 4. NAVIGATION & VIEW SWITCHING
+    function switchView(viewName) {
+      ['home', 'circle-uploads', 'daily', 'abstract', 'weekly', 'status-update', 'add-work', 'admin'].forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.add('hidden');
+        const btn = document.getElementById(`nav-btn-${v}`);
+        if (btn) btn.className = "px-2.5 py-1.5 rounded font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center gap-1 transition";
+      });
+
+      const activeEl = document.getElementById(`view-${viewName}`);
+      if (activeEl) activeEl.classList.remove('hidden');
+      const activeBtn = document.getElementById(`nav-btn-${viewName}`);
+      if (activeBtn) activeBtn.className = "px-2.5 py-1.5 rounded font-semibold bg-sky-600 text-white flex items-center gap-1 transition";
+
+      if (viewName === 'circle-uploads') renderCircleTabsRibbon();
+      if (viewName === 'daily') renderDailyStatusDashboard();
+      if (viewName === 'abstract') renderPriorityAbstractTable();
+      if (viewName === 'weekly') renderWeeklyConsolidatedTable();
+      if (viewName === 'status-update') loadStatusUpdateRows();
+      if (viewName === 'admin') renderAdminConsoleData();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDatabase();
+      loadAdminSecurity();
+      initAddWorkDropdowns();
+      recalculateAndRefreshAll();
+      renderCircleTabsRibbon();
+      document.getElementById('printTimestamp').innerText = `Report Date: ${new Date().toLocaleDateString('en-GB')}`;
+      switchView('home');
+    });
+  </script>
+</body>
+</html>
